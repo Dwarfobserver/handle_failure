@@ -3,14 +3,14 @@
 
 This header-only C++17 tiny library is an attempt to solve some problems in error handling :
 It allows to efficiently handle irrecoverable errors with a terse syntax, and without intermediate result.
+It comes with a throwing implementation (used with the 'unwrap' syntax below).
 
-It provides the core functionnalities in 'handle_failure/core.hpp' and a basic implementation in the two other files 'handle_failure/error_traits.hpp' and 'handle_failure/unwrap.hpp'. 'handle_failure.hpp' is an amalgation of these three tiles.
-
-Example (using the given throwing implementation) :
+Example (using the given implementation) :
 
 ```cpp
 
 #include <handle_failure.hpp>
+#include <iostream>
 
 // Some functions that can fail.
 std::pair<std::string, std::error_code> make_string();
@@ -22,8 +22,8 @@ int main() {
         // The value is extracted fom the return type.
         const auto str = make_string() >> hf::unwrap();
 
-        // A macro is available to pass context informations.
-        const auto val = to_int(argv[1]) >> HF_UNWRAP("While parsing '", str, '\'');
+        // A macro is available to pass context informations in case of failure.
+        const auto val = to_int(str) >> HF_UNWRAP("While parsing '", str, '\'');
 
         // Equialent without macro : The context informations are in a lambda to
         // only evaluate them on failure.
@@ -32,7 +32,7 @@ int main() {
         });
     }
     catch (hf::unwrap_error const& e) {
-        // The exception will describe the error and add the given context informations.
+        // The exception describes the error and add the given context informations.
         std::cout << e.what() << '\n';
     }
 }

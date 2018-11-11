@@ -14,10 +14,10 @@ namespace hf {
 // | Interface |
 // +-----------+
 
-// Calls f(error_info, args...) on failure and returns the unwrapped result (if there is one).
+// Calls 'handler(error_info, args...)' on failure and returns the unwrapped result (if there is one).
 // Usage : f() >> handle_failure(handler, args...);
 //
-// Do NOT store this function result, as it does not preserve temporary 'args...' lifetime.
+// Don't store this function result, as it does not extends the temporaries 'args...' lifetime.
 template <class FailureHandler, class...Args>
 constexpr auto handle_failure(FailureHandler&& f, Args&&...args) noexcept;
 
